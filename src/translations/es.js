@@ -118,6 +118,103 @@ export const es = {
     },
 
     homeLink: '🏠 Inicio',
+    termsLink: '📋 Términos de Uso',
+    dataDeletionLink: '🗑️ Eliminación de Datos'
+  },
+
+  // Data Deletion page
+  dataDeletion: {
+    backToHome: '← Volver al Inicio',
+    title: '🗑️ Solicitud de Eliminación de Datos',
+    lastUpdated: `Última actualización: ${APP_CONSTANTS.lastUpdated}`,
+    intro: 'Usted tiene el derecho de solicitar la eliminación completa de sus datos de nuestra plataforma. Esta página explica cómo hacer esta solicitud y qué esperar.',
+
+    section1: {
+      title: '1. Su Derecho a la Eliminación de Datos',
+      description: 'De acuerdo con las regulaciones de protección de datos y políticas de Meta Platform, puede solicitar la eliminación de todos los datos que hemos recopilado sobre su cuenta de Instagram. Esto incluye:',
+      items: [
+        'Información de perfil (nombre de usuario, nombre de visualización, biografía)',
+        'Datos de medios (publicaciones, fotos, videos, subtítulos)',
+        'Métricas de engagement (me gusta, comentarios, vistas)',
+        'Todos los informes de análisis e insights generados',
+        'Registros de acceso e historial de uso'
+      ]
+    },
+
+    section2: {
+      title: '2. Cómo Solicitar la Eliminación de Datos',
+      description: 'Para solicitar la eliminación de sus datos, siga estos pasos:',
+      steps: [
+        `Envíe un correo electrónico a <strong>${APP_CONSTANTS.emails.privacy}</strong>`,
+        'En la línea de asunto, escriba: "Solicitud de Eliminación de Datos"',
+        'En el cuerpo del correo, incluya:',
+        '• Su nombre de usuario de Instagram',
+        '• La dirección de correo electrónico asociada con su cuenta (si aplica)',
+        '• Confirmación de que desea que todos sus datos sean eliminados',
+        'Confirmaremos la recepción de su solicitud en un plazo de 48 horas'
+      ]
+    },
+
+    section3: {
+      title: '3. Plazo de Procesamiento',
+      description: 'Su solicitud de eliminación de datos se procesará según el siguiente cronograma:',
+      items: [
+        '<strong>Confirmación:</strong> En un plazo de 48 horas después de recibir su solicitud',
+        '<strong>Procesamiento:</strong> Hasta 30 días para la eliminación completa de datos',
+        '<strong>Notificación de Finalización:</strong> Confirmación por correo electrónico cuando la eliminación esté completa',
+        '<strong>Sistemas de Respaldo:</strong> Los datos en sistemas de respaldo se eliminarán en el próximo ciclo programado (hasta 90 días)'
+      ]
+    },
+
+    section4: {
+      title: '4. Qué Sucede Después de la Eliminación',
+      warning: '<strong>Importante:</strong> La eliminación de datos es irreversible. Una vez que sus datos sean eliminados:',
+      items: [
+        'Perderá el acceso a todos los informes de análisis e insights',
+        'Los datos históricos y métricas ya no estarán disponibles',
+        'Deberá reautorizar la aplicación para usar los servicios nuevamente',
+        'Los análisis anteriores no pueden recuperarse',
+        'El proceso de eliminación no se puede deshacer'
+      ]
+    },
+
+    section5: {
+      title: '5. Revocando Permisos de Instagram',
+      description: 'Además de solicitar la eliminación de datos de nuestra plataforma, también puede revocar el acceso de nuestra aplicación a su cuenta de Instagram:',
+      steps: [
+        'Vaya a la Configuración de Instagram',
+        'Navegue a "Seguridad" → "Apps y Sitios Web"',
+        'Encuentre nuestra aplicación en la lista',
+        'Haga clic en "Eliminar" para revocar todos los permisos',
+        'Nota: Esto no elimina los datos que ya hemos recopilado; debe enviar una solicitud de eliminación para eso'
+      ]
+    },
+
+    section6: {
+      title: '6. Excepciones y Requisitos Legales',
+      description: 'Podemos retener cierta información si lo exige la ley o para propósitos comerciales legítimos:',
+      items: [
+        'Datos necesarios para cumplir con obligaciones legales',
+        'Información necesaria para resolver disputas o hacer cumplir acuerdos',
+        'Datos anonimizados utilizados para análisis estadístico (no pueden identificarlo)',
+        'Registros de auditoría necesarios para fines de seguridad'
+      ],
+      note: 'Cualquier dato retenido se limitará a lo que sea legalmente requerido y se mantendrá seguro.'
+    },
+
+    section7: {
+      title: '7. Preguntas o Problemas',
+      description: `Si tiene preguntas sobre el proceso de eliminación de datos o encuentra algún problema, contáctenos en <strong>${APP_CONSTANTS.emails.support}</strong>`,
+      response: 'Responderemos a su consulta en un plazo de 2 días hábiles.'
+    },
+
+    section8: {
+      title: '8. Cumplimiento con Meta Platform',
+      description: `Este proceso de eliminación de datos cumple con los <a href="https://developers.facebook.com/docs/development/create-an-app/app-dashboard/data-deletion-callback" target="_blank" rel="noopener noreferrer">Requisitos de Eliminación de Datos de Meta Platform</a>. Para más información sobre sus derechos, consulte nuestra <a href="/privacy">Política de Privacidad</a>.`
+    },
+
+    homeLink: '🏠 Inicio',
+    privacyLink: '🔒 Política de Privacidad',
     termsLink: '📋 Términos de Uso'
   },
 

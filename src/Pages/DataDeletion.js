@@ -4,9 +4,9 @@ import { useLanguage } from "../contexts/LanguageContext";
 import { getTranslation } from "../translations";
 import LanguageSelector from "../components/LanguageSelector";
 
-export default function Privacy() {
+export default function DataDeletion() {
   const { language } = useLanguage();
-  const t = getTranslation(language).privacy;
+  const t = getTranslation(language).dataDeletion;
 
   const renderHTML = (html) => {
     return { __html: html };
@@ -33,29 +33,21 @@ export default function Privacy() {
         <section className="mb-xl">
           <h2 className="mb-md">{t.section1.title}</h2>
           <p className="mb-md">{t.section1.description}</p>
-          <ul className="mb-md">
+          <ul>
             {t.section1.items.map((item, index) => (
-              <li key={index} dangerouslySetInnerHTML={renderHTML(item)} />
+              <li key={index}>{item}</li>
             ))}
           </ul>
-          <div style={{ 
-            background: 'rgba(131, 58, 180, 0.1)', 
-            border: '1px solid rgba(131, 58, 180, 0.3)',
-            borderRadius: 'var(--radius-md)',
-            padding: 'var(--spacing-md)'
-          }}>
-            <span dangerouslySetInnerHTML={renderHTML(t.section1.note)} />
-          </div>
         </section>
 
         <section className="mb-xl">
           <h2 className="mb-md">{t.section2.title}</h2>
           <p className="mb-md">{t.section2.description}</p>
-          <ul>
-            {t.section2.items.map((item, index) => (
-              <li key={index}>{item}</li>
+          <ol>
+            {t.section2.steps.map((step, index) => (
+              <li key={index} dangerouslySetInnerHTML={renderHTML(step)} />
             ))}
-          </ul>
+          </ol>
         </section>
 
         <section className="mb-xl">
@@ -63,15 +55,22 @@ export default function Privacy() {
           <p className="mb-md">{t.section3.description}</p>
           <ul>
             {t.section3.items.map((item, index) => (
-              <li key={index}>{item}</li>
+              <li key={index} dangerouslySetInnerHTML={renderHTML(item)} />
             ))}
           </ul>
         </section>
 
         <section className="mb-xl">
           <h2 className="mb-md">{t.section4.title}</h2>
-          <p className="mb-md" dangerouslySetInnerHTML={renderHTML(t.section4.noShare)} />
-          <p>{t.section4.description}</p>
+          <div style={{ 
+            background: 'rgba(252, 70, 70, 0.1)', 
+            border: '1px solid rgba(252, 70, 70, 0.3)',
+            borderRadius: 'var(--radius-md)',
+            padding: 'var(--spacing-md)',
+            marginBottom: 'var(--spacing-md)'
+          }}>
+            <p dangerouslySetInnerHTML={renderHTML(t.section4.warning)} />
+          </div>
           <ul>
             {t.section4.items.map((item, index) => (
               <li key={index}>{item}</li>
@@ -82,9 +81,19 @@ export default function Privacy() {
         <section className="mb-xl">
           <h2 className="mb-md">{t.section5.title}</h2>
           <p className="mb-md">{t.section5.description}</p>
+          <ol>
+            {t.section5.steps.map((step, index) => (
+              <li key={index}>{step}</li>
+            ))}
+          </ol>
+        </section>
+
+        <section className="mb-xl">
+          <h2 className="mb-md">{t.section6.title}</h2>
+          <p className="mb-md">{t.section6.description}</p>
           <ul>
-            {t.section5.items.map((item, index) => (
-              <li key={index} dangerouslySetInnerHTML={renderHTML(item)} />
+            {t.section6.items.map((item, index) => (
+              <li key={index}>{item}</li>
             ))}
           </ul>
           <div style={{ 
@@ -94,18 +103,23 @@ export default function Privacy() {
             padding: 'var(--spacing-md)',
             marginTop: 'var(--spacing-md)'
           }}>
-            <span dangerouslySetInnerHTML={renderHTML(t.section5.contact)} />
+            <span dangerouslySetInnerHTML={renderHTML(t.section6.note)} />
           </div>
         </section>
 
         <section className="mb-xl">
-          <h2 className="mb-md">{t.section6.title}</h2>
-          <p>{t.section6.description}</p>
-        </section>
-
-        <section className="mb-xl">
           <h2 className="mb-md">{t.section7.title}</h2>
-          <p>{t.section7.description}</p>
+          <div style={{ 
+            background: 'rgba(131, 58, 180, 0.1)', 
+            border: '1px solid rgba(131, 58, 180, 0.3)',
+            borderRadius: 'var(--radius-md)',
+            padding: 'var(--spacing-md)'
+          }}>
+            <p dangerouslySetInnerHTML={renderHTML(t.section7.description)} />
+            <p className="text-muted" style={{ marginTop: 'var(--spacing-sm)', marginBottom: 0 }}>
+              {t.section7.response}
+            </p>
+          </div>
         </section>
 
         <section className="mb-xl">
@@ -113,28 +127,9 @@ export default function Privacy() {
           <p dangerouslySetInnerHTML={renderHTML(t.section8.description)} />
         </section>
 
-        <section className="mb-xl">
-          <h2 className="mb-md">{t.section9.title}</h2>
-          <p>{t.section9.description}</p>
-        </section>
-
-        <section className="mb-xl">
-          <h2 className="mb-md">{t.section10.title}</h2>
-          <p className="mb-md">{t.section10.description}</p>
-          <div style={{ 
-            background: 'rgba(131, 58, 180, 0.1)', 
-            border: '1px solid rgba(131, 58, 180, 0.3)',
-            borderRadius: 'var(--radius-md)',
-            padding: 'var(--spacing-md)'
-          }}>
-            <p dangerouslySetInnerHTML={renderHTML(t.section10.email)} />
-            <p dangerouslySetInnerHTML={renderHTML(t.section10.support)} />
-          </div>
-        </section>
-
         <div className="nav-links mt-xl">
           <Link to="/" className="nav-link">{t.homeLink}</Link>
-          <Link to="/data-deletion" className="nav-link">{t.dataDeletionLink}</Link>
+          <Link to="/privacy" className="nav-link">{t.privacyLink}</Link>
           <Link to="/terms" className="nav-link">{t.termsLink}</Link>
         </div>
       </div>

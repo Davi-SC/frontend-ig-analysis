@@ -194,6 +194,7 @@ export default function Terms() {
         <div className="nav-links mt-xl">
           <Link to="/" className="nav-link">{t.homeLink}</Link>
           <Link to="/privacy" className="nav-link">{t.privacyLink}</Link>
+          <Link to="/data-deletion" className="nav-link">🗑️ Data Deletion</Link>
         </div>
       </div>
     </div>

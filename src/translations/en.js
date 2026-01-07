@@ -118,6 +118,103 @@ export const en = {
     },
 
     homeLink: '🏠 Home',
+    termsLink: '📋 Terms of Use',
+    dataDeletionLink: '🗑️ Data Deletion'
+  },
+
+  // Data Deletion page
+  dataDeletion: {
+    backToHome: '← Back to Home',
+    title: '🗑️ Data Deletion Request',
+    lastUpdated: `Last updated: ${APP_CONSTANTS.lastUpdated}`,
+    intro: 'You have the right to request the complete deletion of your data from our platform. This page explains how to make this request and what to expect.',
+
+    section1: {
+      title: '1. Your Right to Data Deletion',
+      description: 'In accordance with data protection regulations and Meta Platform policies, you can request the deletion of all data we have collected about your Instagram account. This includes:',
+      items: [
+        'Profile information (username, display name, bio)',
+        'Media data (posts, photos, videos, captions)',
+        'Engagement metrics (likes, comments, views)',
+        'All analysis reports and insights generated',
+        'Access logs and usage history'
+      ]
+    },
+
+    section2: {
+      title: '2. How to Request Data Deletion',
+      description: 'To request the deletion of your data, follow these steps:',
+      steps: [
+        `Send an email to <strong>${APP_CONSTANTS.emails.privacy}</strong>`,
+        'In the subject line, write: "Data Deletion Request"',
+        'In the email body, include:',
+        '• Your Instagram username',
+        '• The email address associated with your account (if applicable)',
+        '• Confirmation that you want all your data deleted',
+        'We will confirm receipt of your request within 48 hours'
+      ]
+    },
+
+    section3: {
+      title: '3. Processing Timeline',
+      description: 'Your data deletion request will be processed according to the following timeline:',
+      items: [
+        '<strong>Confirmation:</strong> Within 48 hours of receiving your request',
+        '<strong>Processing:</strong> Up to 30 days for complete data removal',
+        '<strong>Completion Notification:</strong> Email confirmation when deletion is complete',
+        '<strong>Backup Systems:</strong> Data in backup systems will be deleted in the next scheduled backup cycle (up to 90 days)'
+      ]
+    },
+
+    section4: {
+      title: '4. What Happens After Deletion',
+      warning: '<strong>Important:</strong> Data deletion is irreversible. Once your data is deleted:',
+      items: [
+        'You will lose access to all analysis reports and insights',
+        'Historical data and metrics will no longer be available',
+        'You will need to re-authorize the application to use services again',
+        'Previous analyses cannot be recovered',
+        'The deletion process cannot be undone'
+      ]
+    },
+
+    section5: {
+      title: '5. Revoking Instagram Permissions',
+      description: 'In addition to requesting data deletion from our platform, you can also revoke our application\'s access to your Instagram account:',
+      steps: [
+        'Go to your Instagram Settings',
+        'Navigate to "Security" → "Apps and Websites"',
+        'Find our application in the list',
+        'Click "Remove" to revoke all permissions',
+        'Note: This does not delete data we already collected; you must submit a deletion request for that'
+      ]
+    },
+
+    section6: {
+      title: '6. Exceptions and Legal Requirements',
+      description: 'We may retain certain information if required by law or for legitimate business purposes:',
+      items: [
+        'Data required to comply with legal obligations',
+        'Information necessary to resolve disputes or enforce agreements',
+        'Anonymized data used for statistical analysis (cannot identify you)',
+        'Audit logs required for security purposes'
+      ],
+      note: 'Any retained data will be limited to what is legally required and will be kept secure.'
+    },
+
+    section7: {
+      title: '7. Questions or Issues',
+      description: `If you have questions about the data deletion process or encounter any issues, please contact us at <strong>${APP_CONSTANTS.emails.support}</strong>`,
+      response: 'We will respond to your inquiry within 2 business days.'
+    },
+
+    section8: {
+      title: '8. Meta Platform Compliance',
+      description: `This data deletion process complies with <a href="https://developers.facebook.com/docs/development/create-an-app/app-dashboard/data-deletion-callback" target="_blank" rel="noopener noreferrer">Meta Platform Data Deletion Requirements</a>. For more information about your rights, see our <a href="/privacy">Privacy Policy</a>.`
+    },
+
+    homeLink: '🏠 Home',
+    privacyLink: '🔒 Privacy Policy',
     termsLink: '📋 Terms of Use'
   },
 

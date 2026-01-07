@@ -118,6 +118,103 @@ export const pt = {
     },
 
     homeLink: '🏠 Home',
+    termsLink: '📋 Termos de Uso',
+    dataDeletionLink: '🗑️ Exclusão de Dados'
+  },
+
+  // Data Deletion page
+  dataDeletion: {
+    backToHome: '← Voltar para Home',
+    title: '🗑️ Solicitação de Exclusão de Dados',
+    lastUpdated: `Última atualização: ${APP_CONSTANTS.lastUpdated}`,
+    intro: 'Você tem o direito de solicitar a exclusão completa de seus dados da nossa plataforma. Esta página explica como fazer essa solicitação e o que esperar.',
+
+    section1: {
+      title: '1. Seu Direito à Exclusão de Dados',
+      description: 'De acordo com as regulamentações de proteção de dados e políticas da Meta Platform, você pode solicitar a exclusão de todos os dados que coletamos sobre sua conta do Instagram. Isso inclui:',
+      items: [
+        'Informações de perfil (nome de usuário, nome de exibição, biografia)',
+        'Dados de mídia (posts, fotos, vídeos, legendas)',
+        'Métricas de engajamento (curtidas, comentários, visualizações)',
+        'Todos os relatórios de análise e insights gerados',
+        'Logs de acesso e histórico de uso'
+      ]
+    },
+
+    section2: {
+      title: '2. Como Solicitar a Exclusão de Dados',
+      description: 'Para solicitar a exclusão de seus dados, siga estes passos:',
+      steps: [
+        `Envie um e-mail para <strong>${APP_CONSTANTS.emails.privacy}</strong>`,
+        'Na linha de assunto, escreva: "Solicitação de Exclusão de Dados"',
+        'No corpo do e-mail, inclua:',
+        '• Seu nome de usuário do Instagram',
+        '• O endereço de e-mail associado à sua conta (se aplicável)',
+        '• Confirmação de que deseja todos os seus dados excluídos',
+        'Confirmaremos o recebimento de sua solicitação em até 48 horas'
+      ]
+    },
+
+    section3: {
+      title: '3. Prazo de Processamento',
+      description: 'Sua solicitação de exclusão de dados será processada de acordo com o seguinte cronograma:',
+      items: [
+        '<strong>Confirmação:</strong> Em até 48 horas após receber sua solicitação',
+        '<strong>Processamento:</strong> Até 30 dias para remoção completa dos dados',
+        '<strong>Notificação de Conclusão:</strong> Confirmação por e-mail quando a exclusão estiver completa',
+        '<strong>Sistemas de Backup:</strong> Dados em sistemas de backup serão excluídos no próximo ciclo programado (até 90 dias)'
+      ]
+    },
+
+    section4: {
+      title: '4. O Que Acontece Após a Exclusão',
+      warning: '<strong>Importante:</strong> A exclusão de dados é irreversível. Uma vez que seus dados sejam excluídos:',
+      items: [
+        'Você perderá acesso a todos os relatórios de análise e insights',
+        'Dados históricos e métricas não estarão mais disponíveis',
+        'Você precisará reautorizar o aplicativo para usar os serviços novamente',
+        'Análises anteriores não podem ser recuperadas',
+        'O processo de exclusão não pode ser desfeito'
+      ]
+    },
+
+    section5: {
+      title: '5. Revogando Permissões do Instagram',
+      description: 'Além de solicitar a exclusão de dados de nossa plataforma, você também pode revogar o acesso do nosso aplicativo à sua conta do Instagram:',
+      steps: [
+        'Vá para as Configurações do Instagram',
+        'Navegue até "Segurança" → "Apps e Sites"',
+        'Encontre nosso aplicativo na lista',
+        'Clique em "Remover" para revogar todas as permissões',
+        'Nota: Isso não exclui os dados que já coletamos; você deve enviar uma solicitação de exclusão para isso'
+      ]
+    },
+
+    section6: {
+      title: '6. Exceções e Requisitos Legais',
+      description: 'Podemos reter certas informações se exigido por lei ou para propósitos comerciais legítimos:',
+      items: [
+        'Dados necessários para cumprir obrigações legais',
+        'Informações necessárias para resolver disputas ou fazer cumprir acordos',
+        'Dados anonimizados usados para análise estatística (não podem identificá-lo)',
+        'Logs de auditoria necessários para fins de segurança'
+      ],
+      note: 'Quaisquer dados retidos serão limitados ao que é legalmente exigido e serão mantidos seguros.'
+    },
+
+    section7: {
+      title: '7. Dúvidas ou Problemas',
+      description: `Se você tiver dúvidas sobre o processo de exclusão de dados ou encontrar algum problema, entre em contato conosco em <strong>${APP_CONSTANTS.emails.support}</strong>`,
+      response: 'Responderemos à sua consulta em até 2 dias úteis.'
+    },
+
+    section8: {
+      title: '8. Conformidade com a Meta Platform',
+      description: `Este processo de exclusão de dados está em conformidade com os <a href="https://developers.facebook.com/docs/development/create-an-app/app-dashboard/data-deletion-callback" target="_blank" rel="noopener noreferrer">Requisitos de Exclusão de Dados da Meta Platform</a>. Para mais informações sobre seus direitos, consulte nossa <a href="/privacy">Política de Privacidade</a>.`
+    },
+
+    homeLink: '🏠 Home',
+    privacyLink: '🔒 Política de Privacidade',
     termsLink: '📋 Termos de Uso'
   },
 

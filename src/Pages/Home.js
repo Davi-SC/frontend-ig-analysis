@@ -50,6 +50,9 @@ export default function Home() {
           <Link to="/privacy" className="nav-link">
             {t.home.privacyLink}
           </Link>
+          <Link to="/data-deletion" className="nav-link">
+            🗑️ Data Deletion
+          </Link>
           <Link to="/terms" className="nav-link">
             {t.home.termsLink}
           </Link>
