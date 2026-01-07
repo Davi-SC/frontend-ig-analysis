@@ -1,3 +1,5 @@
+import { APP_CONSTANTS } from './constants';
+
 export const es = {
   // Language selector
   language: {
@@ -26,7 +28,7 @@ export const es = {
   privacy: {
     backToHome: '← Volver al Inicio',
     title: '🔒 Política de Privacidad',
-    lastUpdated: 'Última actualización: Enero de 2026',
+    lastUpdated: `Última actualización: ${APP_CONSTANTS.lastUpdated}`,
     intro: 'Esta Política de Privacidad describe cómo recopilamos, usamos, almacenamos y protegemos los datos de los usuarios en nuestra aplicación de análisis de Instagram.',
     
     section1: {
@@ -85,7 +87,7 @@ export const es = {
         '<strong>Revocación:</strong> Revocar permisos de acceso en cualquier momento a través de la configuración de Instagram',
         '<strong>Portabilidad:</strong> Solicitar sus datos en formato legible por máquina'
       ],
-      contact: 'Para ejercer cualquiera de estos derechos, contáctenos a través del correo electrónico: <strong>privacy@instagram-analysis-app.com</strong>'
+      contact: `Para ejercer cualquiera de estos derechos, contáctenos a través del correo electrónico: <strong>${APP_CONSTANTS.emails.privacy}</strong>`
     },
 
     section6: {
@@ -111,8 +113,8 @@ export const es = {
     section10: {
       title: '10. Contacto',
       description: 'Si tiene preguntas, inquietudes o solicitudes relacionadas con esta Política de Privacidad o el tratamiento de sus datos, contáctenos:',
-      email: '<strong>Correo Electrónico:</strong> privacy@instagram-analysis-app.com',
-      support: '<strong>Soporte:</strong> support@instagram-analysis-app.com'
+      email: `<strong>Correo Electrónico:</strong> ${APP_CONSTANTS.emails.privacy}`,
+      support: `<strong>Soporte:</strong> ${APP_CONSTANTS.emails.support}`
     },
 
     homeLink: '🏠 Inicio',
@@ -123,7 +125,7 @@ export const es = {
   terms: {
     backToHome: '← Volver al Inicio',
     title: '📋 Términos de Uso',
-    lastUpdated: 'Última actualización: Enero de 2026',
+    lastUpdated: `Última actualización: ${APP_CONSTANTS.lastUpdated}`,
     intro: 'Bienvenido a nuestra aplicación de análisis de Instagram. Al utilizar este servicio, usted acepta los términos y condiciones descritos a continuación.',
 
     section1: {
@@ -258,14 +260,14 @@ export const es = {
     section14: {
       title: '14. Contacto',
       description: 'Para preguntas, soporte o cuestiones relacionadas con estos Términos de Uso:',
-      support: '<strong>Correo Electrónico de Soporte:</strong> support@instagram-analysis-app.com',
-      legal: '<strong>Correo Electrónico Legal:</strong> legal@instagram-analysis-app.com'
+      support: `<strong>Correo Electrónico de Soporte:</strong> ${APP_CONSTANTS.emails.support}`,
+      legal: `<strong>Correo Electrónico Legal:</strong> ${APP_CONSTANTS.emails.legal}`
     },
 
     versionInfo: {
-      lastUpdate: '<strong>Última Actualización:</strong> Enero de 2026',
-      version: '<strong>Versión:</strong> 1.0',
-      effectiveDate: '<strong>Fecha de Vigencia:</strong> Enero de 2026'
+      lastUpdate: `<strong>Última Actualización:</strong> ${APP_CONSTANTS.lastUpdated}`,
+      version: `<strong>Versión:</strong> ${APP_CONSTANTS.version}`,
+      effectiveDate: `<strong>Fecha de Vigencia:</strong> ${APP_CONSTANTS.effectiveDate}`
     },
 
     homeLink: '🏠 Inicio',

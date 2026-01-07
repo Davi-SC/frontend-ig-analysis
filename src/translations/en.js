@@ -1,3 +1,5 @@
+import { APP_CONSTANTS } from './constants';
+
 export const en = {
   // Language selector
   language: {
@@ -26,7 +28,7 @@ export const en = {
   privacy: {
     backToHome: '← Back to Home',
     title: '🔒 Privacy Policy',
-    lastUpdated: 'Last updated: January 2026',
+    lastUpdated: `Last updated: ${APP_CONSTANTS.lastUpdated}`,
     intro: 'This Privacy Policy describes how we collect, use, store, and protect user data in our Instagram analysis application.',
     
     section1: {
@@ -85,7 +87,7 @@ export const en = {
         '<strong>Revocation:</strong> Revoke access permissions at any time through Instagram settings',
         '<strong>Portability:</strong> Request your data in machine-readable format'
       ],
-      contact: 'To exercise any of these rights, contact us at: <strong>privacy@instagram-analysis-app.com</strong>'
+      contact: `To exercise any of these rights, contact us at: <strong>${APP_CONSTANTS.emails.privacy}</strong>`
     },
 
     section6: {
@@ -111,8 +113,8 @@ export const en = {
     section10: {
       title: '10. Contact',
       description: 'If you have questions, concerns, or requests related to this Privacy Policy or data handling, contact us:',
-      email: '<strong>Email:</strong> privacy@instagram-analysis-app.com',
-      support: '<strong>Support:</strong> support@instagram-analysis-app.com'
+      email: `<strong>Email:</strong> ${APP_CONSTANTS.emails.privacy}`,
+      support: `<strong>Support:</strong> ${APP_CONSTANTS.emails.support}`
     },
 
     homeLink: '🏠 Home',
@@ -123,7 +125,7 @@ export const en = {
   terms: {
     backToHome: '← Back to Home',
     title: '📋 Terms of Use',
-    lastUpdated: 'Last updated: January 2026',
+    lastUpdated: `Last updated: ${APP_CONSTANTS.lastUpdated}`,
     intro: 'Welcome to our Instagram analysis application. By using this service, you agree to the terms and conditions described below.',
 
     section1: {
@@ -258,14 +260,14 @@ export const en = {
     section14: {
       title: '14. Contact',
       description: 'For questions, support, or issues related to these Terms of Use:',
-      support: '<strong>Support Email:</strong> support@instagram-analysis-app.com',
-      legal: '<strong>Legal Email:</strong> legal@instagram-analysis-app.com'
+      support: `<strong>Support Email:</strong> ${APP_CONSTANTS.emails.support}`,
+      legal: `<strong>Legal Email:</strong> ${APP_CONSTANTS.emails.legal}`
     },
 
     versionInfo: {
-      lastUpdate: '<strong>Last Update:</strong> January 2026',
-      version: '<strong>Version:</strong> 1.0',
-      effectiveDate: '<strong>Effective Date:</strong> January 2026'
+      lastUpdate: `<strong>Last Update:</strong> ${APP_CONSTANTS.lastUpdated}`,
+      version: `<strong>Version:</strong> ${APP_CONSTANTS.version}`,
+      effectiveDate: `<strong>Effective Date:</strong> ${APP_CONSTANTS.effectiveDate}`
     },
 
     homeLink: '🏠 Home',
