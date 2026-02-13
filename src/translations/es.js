@@ -19,6 +19,7 @@ export const es = {
       'Informes personalizados de rendimiento',
       'Insights sobre engagement y alcance'
     ],
+    dashboardLink: '📊 Dashboard',
     privacyLink: '🔒 Política de Privacidad',
     termsLink: '📋 Términos de Uso',
     footer: '¡Pronto podrás transformar tus datos de Instagram en insights valiosos!'
@@ -369,5 +370,51 @@ export const es = {
 
     homeLink: '🏠 Inicio',
     privacyLink: '🔒 Política de Privacidad'
+  },
+
+  // Dashboard page
+  dashboard: {
+    backToHome: '← Volver al Inicio',
+    title: 'Dashboard Instagram Business',
+    subtitle: 'Conecte su cuenta Instagram Business para ver datos de perfil, insights de engagement y comentarios usando la API de Meta.',
+    connectButton: 'Conectar Instagram Business',
+    disconnectButton: 'Desconectar',
+    connected: 'Conectado',
+    howItWorks: 'Cómo Funciona — Permisos Utilizados',
+
+    // Permission descriptions
+    permBasicDesc: 'Leer información del perfil, seguidores y publicaciones recientes.',
+    permInsightsDesc: 'Acceder al alcance, impresiones y vistas del perfil de la cuenta.',
+    permCommentsDesc: 'Leer comentarios en sus publicaciones.',
+    permPagesDesc: 'Necesario para encontrar la Página de Facebook vinculada a su cuenta Instagram Business.',
+
+    // Profile section
+    profileTitle: 'Perfil Básico',
+    followers: 'Seguidores',
+    following: 'Siguiendo',
+    posts: 'Publicaciones',
+
+    // Insights section
+    insightsTitle: 'Insights de Engagement',
+    insightsPeriod: 'Datos agregados — últimos 28 días',
+    reach: 'Alcance',
+    impressions: 'Impresiones',
+    profileViews: 'Vistas del Perfil',
+
+    // Comments section
+    commentsTitle: 'Comentarios de la Publicación',
+    selectPost: 'Seleccione una publicación para ver comentarios:',
+    noComments: 'No se encontraron comentarios para esta publicación.',
+
+    // Errors
+    errors: {
+      noPages: 'No se encontraron Páginas de Facebook. Asegúrese de que su cuenta tiene una Página de Facebook vinculada.',
+      noIgBusiness: 'No se encontró una cuenta Instagram Business vinculada a esta Página de Facebook.'
+    },
+
+    // Nav
+    homeLink: 'Inicio',
+    privacyLink: 'Privacidad',
+    termsLink: 'Términos'
   }
 };

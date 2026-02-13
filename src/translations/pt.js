@@ -19,6 +19,7 @@ export const pt = {
       'Relatórios personalizados de desempenho',
       'Insights sobre engajamento e alcance'
     ],
+    dashboardLink: '📊 Dashboard',
     privacyLink: '🔒 Política de Privacidade',
     termsLink: '📋 Termos de Uso',
     footer: 'Em breve, você poderá transformar seus dados do Instagram em insights valiosos!'
@@ -369,5 +370,51 @@ export const pt = {
 
     homeLink: '🏠 Home',
     privacyLink: '🔒 Política de Privacidade'
+  },
+
+  // Dashboard page
+  dashboard: {
+    backToHome: '← Voltar para Home',
+    title: 'Dashboard Instagram Business',
+    subtitle: 'Conecte sua conta Instagram Business para visualizar dados de perfil, insights de engajamento e comentários usando a API da Meta.',
+    connectButton: 'Conectar Instagram Business',
+    disconnectButton: 'Desconectar',
+    connected: 'Conectado',
+    howItWorks: 'Como Funciona — Permissões Utilizadas',
+
+    // Permission descriptions
+    permBasicDesc: 'Ler informações do perfil, seguidores e posts recentes.',
+    permInsightsDesc: 'Acessar alcance, impressões e visualizações do perfil da conta.',
+    permCommentsDesc: 'Ler comentários dos seus posts.',
+    permPagesDesc: 'Necessário para encontrar a Página do Facebook vinculada à sua conta Instagram Business.',
+
+    // Profile section
+    profileTitle: 'Perfil Básico',
+    followers: 'Seguidores',
+    following: 'Seguindo',
+    posts: 'Posts',
+
+    // Insights section
+    insightsTitle: 'Insights de Engajamento',
+    insightsPeriod: 'Dados agregados — últimos 28 dias',
+    reach: 'Alcance',
+    impressions: 'Impressões',
+    profileViews: 'Visualizações do Perfil',
+
+    // Comments section
+    commentsTitle: 'Comentários do Post',
+    selectPost: 'Selecione um post para ver os comentários:',
+    noComments: 'Nenhum comentário encontrado para este post.',
+
+    // Errors
+    errors: {
+      noPages: 'Nenhuma Página do Facebook encontrada. Certifique-se de que sua conta tem uma Página do Facebook vinculada.',
+      noIgBusiness: 'Nenhuma conta Instagram Business vinculada a esta Página do Facebook.'
+    },
+
+    // Nav
+    homeLink: 'Home',
+    privacyLink: 'Privacidade',
+    termsLink: 'Termos'
   }
 };

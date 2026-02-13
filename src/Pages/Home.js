@@ -47,6 +47,12 @@ export default function Home() {
         </div>
         
         <div className="nav-links">
+          <Link to="/dashboard" className="nav-link" style={{
+            background: 'linear-gradient(135deg, rgba(131, 58, 180, 0.4), rgba(253, 29, 29, 0.4))',
+            borderColor: 'var(--color-primary)'
+          }}>
+            📊 {t.home.dashboardLink || 'Dashboard'}
+          </Link>
           <Link to="/privacy" className="nav-link">
             {t.home.privacyLink}
           </Link>

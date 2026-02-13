@@ -19,6 +19,7 @@ export const en = {
       'Customized performance reports',
       'Engagement and reach insights'
     ],
+    dashboardLink: '📊 Dashboard',
     privacyLink: '🔒 Privacy Policy',
     termsLink: '📋 Terms of Use',
     footer: 'Soon, you will be able to transform your Instagram data into valuable insights!'
@@ -369,5 +370,51 @@ export const en = {
 
     homeLink: '🏠 Home',
     privacyLink: '🔒 Privacy Policy'
+  },
+
+  // Dashboard page
+  dashboard: {
+    backToHome: '← Back to Home',
+    title: 'Instagram Business Dashboard',
+    subtitle: 'Connect your Instagram Business account to view profile data, engagement insights, and comments using the Meta API.',
+    connectButton: 'Connect Instagram Business',
+    disconnectButton: 'Disconnect',
+    connected: 'Connected',
+    howItWorks: 'How It Works — Permissions Used',
+
+    // Permission descriptions
+    permBasicDesc: 'Read profile info, followers, and recent posts.',
+    permInsightsDesc: 'Access account-level reach, impressions, and profile views.',
+    permCommentsDesc: 'Read comments on your posts.',
+    permPagesDesc: 'Required to find the Facebook Page linked to your Instagram Business account.',
+
+    // Profile section
+    profileTitle: 'Basic Profile',
+    followers: 'Followers',
+    following: 'Following',
+    posts: 'Posts',
+
+    // Insights section
+    insightsTitle: 'Engagement Insights',
+    insightsPeriod: 'Aggregated data — last 28 days',
+    reach: 'Reach',
+    impressions: 'Impressions',
+    profileViews: 'Profile Views',
+
+    // Comments section
+    commentsTitle: 'Post Comments',
+    selectPost: 'Select a post to view comments:',
+    noComments: 'No comments found for this post.',
+
+    // Errors
+    errors: {
+      noPages: 'No Facebook Pages found. Make sure your account has a Facebook Page linked.',
+      noIgBusiness: 'No Instagram Business account linked to this Facebook Page.'
+    },
+
+    // Nav
+    homeLink: 'Home',
+    privacyLink: 'Privacy',
+    termsLink: 'Terms'
   }
 };
