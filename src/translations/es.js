@@ -398,7 +398,7 @@ export const es = {
     insightsTitle: 'Insights de Engagement',
     insightsPeriod: 'Datos agregados — últimos 28 días',
     reach: 'Alcance',
-    impressions: 'Impresiones',
+    accountsEngaged: 'Cuentas Comprometidas',
     profileViews: 'Vistas del Perfil',
 
     // Comments section

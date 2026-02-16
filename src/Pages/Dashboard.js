@@ -177,7 +177,7 @@ export default function Dashboard() {
     setErrors((e) => ({ ...e, insights: null }));
 
     graphGet(
-      `/${igAccountId}/insights?metric=reach,impressions,profile_views&period=day&since=${Math.floor(Date.now() / 1000) - 28 * 86400}&until=${Math.floor(Date.now() / 1000)}`
+      `/${igAccountId}/insights?metric=reach,profile_views,accounts_engaged&period=day&since=${Math.floor(Date.now() / 1000) - 28 * 86400}&until=${Math.floor(Date.now() / 1000)}`
     )
       .then((data) => setInsights(data.data || []))
       .catch((err) => setErrors((e) => ({ ...e, insights: err.message })))
@@ -334,9 +334,9 @@ export default function Dashboard() {
                     icon="🌐"
                   />
                   <MetricCard
-                    label={d.impressions}
-                    value={sumInsightValues("impressions").toLocaleString()}
-                    icon="👁️"
+                    label={d.accountsEngaged || "Accounts Engaged"}
+                    value={sumInsightValues("accounts_engaged").toLocaleString()}
+                    icon="👥"
                   />
                   <MetricCard
                     label={d.profileViews}

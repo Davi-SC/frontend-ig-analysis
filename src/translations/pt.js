@@ -398,7 +398,7 @@ export const pt = {
     insightsTitle: 'Insights de Engajamento',
     insightsPeriod: 'Dados agregados — últimos 28 dias',
     reach: 'Alcance',
-    impressions: 'Impressões',
+    accountsEngaged: 'Contas Engajadas',
     profileViews: 'Visualizações do Perfil',
 
     // Comments section
