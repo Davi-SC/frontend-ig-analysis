@@ -7,11 +7,12 @@ import LanguageSelector from "../components/LanguageSelector";
 const FB_APP_ID = process.env.REACT_APP_FB_APP_ID || "YOUR_APP_ID";
 
 const PERMISSIONS = [
-  "instagram_business_basic",
-  "instagram_business_manage_insights",
-  "instagram_business_manage_comments",
+  "instagram_basic",
+  "instagram_manage_insights",
+  "instagram_manage_comments",
   "pages_show_list",
   "pages_read_engagement",
+  "business_management", // Required for Business/Creator accounts
 ];
 
 export default function Dashboard() {
@@ -139,7 +140,7 @@ export default function Dashboard() {
     setErrors({ profile: null, insights: null, comments: null });
   };
 
-  // ── Fetch Profile (instagram_business_basic) ──
+  // ── Fetch Profile (instagram_basic) ──
   useEffect(() => {
     if (!igAccountId || !accessToken) return;
 
@@ -168,7 +169,7 @@ export default function Dashboard() {
       .catch(() => {});
   }, [igAccountId, accessToken, graphGet]);
 
-  // ── Fetch Insights (instagram_business_manage_insights) ──
+  // ── Fetch Insights (instagram_manage_insights) ──
   useEffect(() => {
     if (!igAccountId || !accessToken) return;
 
@@ -183,7 +184,7 @@ export default function Dashboard() {
       .finally(() => setLoading((l) => ({ ...l, insights: false })));
   }, [igAccountId, accessToken, graphGet]);
 
-  // ── Fetch Comments (instagram_business_manage_comments) ──
+  // ── Fetch Comments (instagram_manage_comments) ──
   useEffect(() => {
     if (!selectedMediaId || !accessToken) return;
 
@@ -254,9 +255,9 @@ export default function Dashboard() {
             <h2>{d.howItWorks}</h2>
             <div className="permissions-grid">
               {[
-                { icon: "👤", perm: "instagram_business_basic", desc: d.permBasicDesc },
-                { icon: "📊", perm: "instagram_business_manage_insights", desc: d.permInsightsDesc },
-                { icon: "💬", perm: "instagram_business_manage_comments", desc: d.permCommentsDesc },
+                { icon: "👤", perm: "instagram_basic", desc: d.permBasicDesc },
+                { icon: "📊", perm: "instagram_manage_insights", desc: d.permInsightsDesc },
+                { icon: "💬", perm: "instagram_manage_comments", desc: d.permCommentsDesc },
                 { icon: "📄", perm: "pages_show_list + pages_read_engagement", desc: d.permPagesDesc },
               ].map((p, i) => (
                 <div key={i} className="permission-card">
@@ -275,7 +276,7 @@ export default function Dashboard() {
             <div className="section-header">
               <h2>👤 {d.profileTitle}</h2>
               <span className="permission-badge permission-badge--blue">
-                instagram_business_basic
+                instagram_basic
               </span>
             </div>
 
@@ -316,7 +317,7 @@ export default function Dashboard() {
             <div className="section-header">
               <h2>📊 {d.insightsTitle}</h2>
               <span className="permission-badge permission-badge--green">
-                instagram_business_manage_insights
+                instagram_manage_insights
               </span>
             </div>
 
@@ -354,7 +355,7 @@ export default function Dashboard() {
             <div className="section-header">
               <h2>💬 {d.commentsTitle}</h2>
               <span className="permission-badge permission-badge--purple">
-                instagram_business_manage_comments
+                instagram_manage_comments
               </span>
             </div>
 
