@@ -177,7 +177,7 @@ export default function Dashboard() {
     setErrors((e) => ({ ...e, insights: null }));
 
     graphGet(
-      `/${igAccountId}/insights?metric=reach,profile_views,accounts_engaged&period=day&since=${Math.floor(Date.now() / 1000) - 28 * 86400}&until=${Math.floor(Date.now() / 1000)}`
+      `/${igAccountId}/insights?metric=reach,profile_views,accounts_engaged&period=day&metric_type=total_value&since=${Math.floor(Date.now() / 1000) - 28 * 86400}&until=${Math.floor(Date.now() / 1000)}`
     )
       .then((data) => setInsights(data.data || []))
       .catch((err) => setErrors((e) => ({ ...e, insights: err.message })))
