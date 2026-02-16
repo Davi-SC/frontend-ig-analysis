@@ -10,7 +10,7 @@ export const es = {
   // Home page
   home: {
     underConstruction: 'EN DESARROLLO',
-    title: 'App en Construcción',
+    title: 'Social Data Lab',
     description: 'Estamos desarrollando una plataforma completa para análisis de datos de Instagram y métricas de audiencia a través de la API de Meta.',
     featuresTitle: 'Funcionalidades Planificadas',
     features: [

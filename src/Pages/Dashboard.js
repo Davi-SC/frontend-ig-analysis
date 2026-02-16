@@ -237,7 +237,7 @@ export default function Dashboard() {
               disabled={!sdkReady}
               id="btn-connect-instagram"
             >
-              📸 {d.connectButton}
+              {d.connectButton}
             </button>
           ) : (
             <div className="connection-status">

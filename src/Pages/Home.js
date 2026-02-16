@@ -13,21 +13,15 @@ export default function Home() {
       <LanguageSelector />
       
       <div className="card text-center" style={{ maxWidth: '600px' }}>
-        <div className="construction-icon">🚧</div>
-        
-        <span className="status-badge">{t.home.underConstruction}</span>
+        <div className="construction-icon">
+          <img src="/icon.png" alt="Social Data Lab" style={{ width: '200px', height: '200px' }} />
+        </div>
         
         <h1 className="mb-md">{t.home.title}</h1>
         
         <p className="mb-lg" style={{ fontSize: 'var(--font-size-lg)', color: 'var(--color-text-secondary)' }}>
           {t.home.description}
         </p>
-        
-        <div className="loading-dots mb-xl">
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
         
         <div style={{ 
           background: 'rgba(131, 58, 180, 0.1)', 
@@ -49,9 +43,11 @@ export default function Home() {
         <div className="nav-links">
           <Link to="/dashboard" className="nav-link" style={{
             background: 'linear-gradient(135deg, rgba(131, 58, 180, 0.4), rgba(253, 29, 29, 0.4))',
-            borderColor: 'var(--color-primary)'
+            borderColor: 'var(--color-primary)',
+            fontSize: 'var(--font-size-lg)',
+            fontWeight: '600'
           }}>
-            📊 {t.home.dashboardLink || 'Dashboard'}
+            {t.home.dashboardLink}
           </Link>
           <Link to="/privacy" className="nav-link">
             {t.home.privacyLink}

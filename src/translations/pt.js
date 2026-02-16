@@ -9,20 +9,19 @@ export const pt = {
 
   // Home page
   home: {
-    underConstruction: 'EM DESENVOLVIMENTO',
-    title: 'App em Construção',
-    description: 'Estamos desenvolvendo uma plataforma completa para análise de dados do Instagram e métricas de audiência através da API da Meta.',
-    featuresTitle: 'Funcionalidades Planejadas',
+    title: 'Social Data Lab',
+    description: 'Bem-vindo à nossa plataforma de análise de dados do Instagram! Conecte sua conta Instagram Business e obtenha insights valiosos sobre seu perfil, engajamento e audiência através da API da Meta.',
+    featuresTitle: 'Funcionalidades Disponíveis',
     features: [
-      'Coleta automática de dados de posts do Instagram',
-      'Análise detalhada de métricas de audiência',
-      'Relatórios personalizados de desempenho',
-      'Insights sobre engajamento e alcance'
+      'Visualização de perfil e métricas básicas',
+      'Análise de insights de engajamento',
+      'Visualização de comentários dos posts',
+      'Dashboard intuitivo e fácil de usar'
     ],
-    dashboardLink: '📊 Dashboard',
+    dashboardLink: '📊 Acessar Dashboard',
     privacyLink: '🔒 Política de Privacidade',
     termsLink: '📋 Termos de Uso',
-    footer: 'Em breve, você poderá transformar seus dados do Instagram em insights valiosos!'
+    footer: 'Comece agora - conecte sua conta Instagram Business e explore suas métricas!'
   },
 
   // Privacy page

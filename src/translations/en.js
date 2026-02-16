@@ -9,20 +9,19 @@ export const en = {
 
   // Home page
   home: {
-    underConstruction: 'UNDER DEVELOPMENT',
-    title: 'App Under Construction',
-    description: 'We are developing a complete platform for Instagram data analysis and audience metrics through Meta API.',
-    featuresTitle: 'Planned Features',
+    title: 'Social Data Lab',
+    description: 'Welcome to our Instagram data analysis platform! Connect your Instagram Business account and get valuable insights about your profile, engagement, and audience through the Meta API.',
+    featuresTitle: 'Available Features',
     features: [
-      'Automatic Instagram post data collection',
-      'Detailed audience metrics analysis',
-      'Customized performance reports',
-      'Engagement and reach insights'
+      'Profile and basic metrics visualization',
+      'Engagement insights analysis',
+      'Post comments visualization',
+      'Intuitive and easy-to-use dashboard'
     ],
-    dashboardLink: '📊 Dashboard',
+    dashboardLink: '📊 Access Dashboard',
     privacyLink: '🔒 Privacy Policy',
     termsLink: '📋 Terms of Use',
-    footer: 'Soon, you will be able to transform your Instagram data into valuable insights!'
+    footer: 'Get started now - connect your Instagram Business account and explore your metrics!'
   },
 
   // Privacy page
