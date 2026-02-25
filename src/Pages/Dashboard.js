@@ -160,16 +160,10 @@ export default function Dashboard() {
     setIgExchangeLoading(true);
     setIgExchangeError(null);
 
-    fetch("https://api.instagram.com/oauth/access_token", {
+    fetch("/api/ig-token", {
       method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams({
-        client_id: IG_APP_ID,
-        client_secret: IG_APP_SECRET,
-        grant_type: "authorization_code",
-        redirect_uri: IG_REDIRECT_URI,
-        code,
-      }),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code }),
     })
       .then((r) => r.json())
       .then((data) => {
