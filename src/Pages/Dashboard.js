@@ -11,7 +11,6 @@ const IG_REDIRECT_URI = process.env.REACT_APP_IG_REDIRECT_URI || "http://localho
 const IG_BUSINESS_SCOPES = [
   "instagram_business_basic",
   "instagram_business_manage_comments",
-  "instagram_business_manage_insights",
 ].join(",");
 
 const PERMISSIONS = [
