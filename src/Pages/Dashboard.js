@@ -136,8 +136,10 @@ export default function Dashboard() {
   // ── Instagram Business Login — redirect to OAuth ──
   const handleInstagramLogin = () => {
     const url =
-      `https://api.instagram.com/oauth/authorize` +
-      `?client_id=${FB_APP_ID}` +
+      `https://www.instagram.com/oauth/authorize` +
+      `?enable_fb_login=0` +
+      `&force_authentication=1` +
+      `&client_id=${FB_APP_ID}` +
       `&redirect_uri=${encodeURIComponent(IG_REDIRECT_URI)}` +
       `&scope=${encodeURIComponent(IG_BUSINESS_SCOPES)}` +
       `&response_type=code`;
