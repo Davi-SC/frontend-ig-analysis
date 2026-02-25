@@ -1,5 +1,5 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useLanguage } from "../contexts/LanguageContext";
 import { getTranslation } from "../translations";
 import LanguageSelector from "../components/LanguageSelector";
@@ -7,6 +7,19 @@ import LanguageSelector from "../components/LanguageSelector";
 export default function Home() {
   const { language } = useLanguage();
   const t = getTranslation(language);
+  const navigate = useNavigate();
+
+  // Capture Instagram OAuth code and redirect to dashboard
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get("code");
+    if (code) {
+      // Strip the trailing #_ that Instagram appends
+      const cleanCode = code.replace(/#_$/, "");
+      sessionStorage.setItem("ig_code", cleanCode);
+      navigate("/dashboard", { replace: true });
+    }
+  }, [navigate]);
 
   return (
     <div className="page-container">
