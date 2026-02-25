@@ -45,6 +45,8 @@ export default function Dashboard() {
 
   const [loading, setLoading] = useState({ profile: false, insights: false, comments: false });
   const [errors, setErrors] = useState({ profile: null, insights: null, comments: null });
+  const [igExchangeLoading, setIgExchangeLoading] = useState(false);
+  const [igExchangeError, setIgExchangeError] = useState(null);
 
   // ── Initialize Facebook SDK ──
   useEffect(() => {
@@ -155,6 +157,8 @@ export default function Dashboard() {
     const code = sessionStorage.getItem("ig_code");
     if (!code || isConnected) return;
     sessionStorage.removeItem("ig_code");
+    setIgExchangeLoading(true);
+    setIgExchangeError(null);
 
     fetch("https://api.instagram.com/oauth/access_token", {
       method: "POST",
@@ -169,16 +173,23 @@ export default function Dashboard() {
     })
       .then((r) => r.json())
       .then((data) => {
+        console.log("[IG Token Exchange]", data);
         if (data.access_token) {
           setAccessToken(data.access_token);
           setIgAccountId(String(data.user_id));
           setIsConnected(true);
           setLoginMethod("instagram");
         } else {
-          setErrors((e) => ({ ...e, profile: data.error_message || "Instagram login failed" }));
+          const msg = data.error_message || JSON.stringify(data);
+          console.error("[IG Token Exchange Error]", msg);
+          setIgExchangeError(msg);
         }
       })
-      .catch(() => setErrors((e) => ({ ...e, profile: "Failed to exchange Instagram code" })));
+      .catch((err) => {
+        console.error("[IG Token Exchange CORS/Network]", err);
+        setIgExchangeError("Network error — token exchange may be blocked by CORS. Check browser console.");
+      })
+      .finally(() => setIgExchangeLoading(false));
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -311,6 +322,20 @@ export default function Dashboard() {
           </Link>
           <h1>{d.title}</h1>
           <p className="dashboard-subtitle">{d.subtitle}</p>
+
+          {/* Instagram token exchange loading/error */}
+          {igExchangeLoading && (
+            <div style={{ textAlign: "center", padding: "16px", color: "var(--color-text-secondary)" }}>
+              <LoadingSpinner />
+              <p style={{ marginTop: "8px" }}>Exchanging Instagram token...</p>
+            </div>
+          )}
+          {igExchangeError && (
+            <div className="error-card" style={{ marginTop: "12px", textAlign: "left" }}>
+              <span>⚠️</span>
+              <p><strong>Instagram login error:</strong> {igExchangeError}</p>
+            </div>
+          )}
 
           {!isConnected ? (
             <div style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap" }}>
