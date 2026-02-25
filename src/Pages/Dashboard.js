@@ -4,9 +4,9 @@ import { useLanguage } from "../contexts/LanguageContext";
 import { getTranslation } from "../translations";
 import LanguageSelector from "../components/LanguageSelector";
 
-const FB_APP_ID = process.env.REACT_APP_FB_APP_ID || "YOUR_APP_ID";
+const FB_APP_ID = process.env.REACT_APP_FB_APP_ID || "859402103106794";
 const IG_APP_SECRET = process.env.REACT_APP_IG_APP_SECRET || "";
-const IG_REDIRECT_URI = process.env.REACT_APP_IG_REDIRECT_URI || "http://localhost:3000/dashboard";
+const IG_REDIRECT_URI = process.env.REACT_APP_IG_REDIRECT_URI || "https://socialdatalab.vercel.app/dashboard";
 
 const IG_BUSINESS_SCOPES = [
   "instagram_business_basic",
