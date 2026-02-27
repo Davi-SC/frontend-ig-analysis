@@ -80,75 +80,86 @@ export default function Dashboard() {
   };
 
   // ── Handle OAuth callback ──
-  // Após o login, o Instagram/Facebook redireciona de volta com ?code= na URL.
-  // O frontend lê o code, envia pro backend e recebe o token pronto.
+  // ── Handle OAuth callback ──
+  // Facebook (implicit flow): token chega no HASH da URL → #access_token=...&long_lived_token=...
+  // Instagram (code flow): code chega nos QUERY PARAMS → ?code=...
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const code = params.get("code");
     const provider = sessionStorage.getItem("oauth_provider");
+    if (!provider || isConnected) return;
 
-    if (!code || !provider || isConnected) return;
+    // ── Facebook: lê o token do hash da URL ──
+    if (provider === "facebook") {
+      // O Meta retorna no formato: ?#access_token=...&long_lived_token=...
+      // O window.location.hash captura tudo após o #
+      const hash = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+      const token = hash.get("long_lived_token") || hash.get("access_token");
+      if (!token) return; // hash ainda não chegou, aguarda
 
-    // Limpa a URL e o sessionStorage antes de qualquer trabalho assíncrono
-    sessionStorage.removeItem("oauth_provider");
-    window.history.replaceState({}, "", window.location.pathname);
+      sessionStorage.removeItem("oauth_provider");
+      window.history.replaceState({}, "", window.location.pathname); // limpa a URL
 
-    setOauthLoading(true);
-    setOauthError(null);
+      setOauthLoading(true);
+      setOauthError(null);
+      setAccessToken(token);
+      setLoginMethod("facebook");
 
-    const isInstagram = provider === "instagram";
+      // Resolve a conta Instagram Business vinculada à Página do Facebook
+      (async () => {
+        try {
+          const pagesRes = await fetch(
+            `https://graph.facebook.com/v25.0/me/accounts?access_token=${token}`,
+          );
+          const pages = await pagesRes.json();
+          if (!pages.data || pages.data.length === 0)
+            throw new Error(d.errors?.noPages || "Nenhuma Página do Facebook encontrada.");
 
-    fetch(
-      `${BACKEND_URL}/oauth/callback?code=${encodeURIComponent(code)}&is_instagram_only=${isInstagram}`,
-    )
-      .then((r) => r.json())
-      .then(async (data) => {
-        if (!data.access_token) {
-          throw new Error(data.detail || "Falha na troca do token OAuth.");
+          const page = pages.data[0];
+          const pageRes = await fetch(
+            `https://graph.facebook.com/v25.0/${page.id}?fields=instagram_business_account&access_token=${token}`,
+          );
+          const pageDetails = await pageRes.json();
+          if (!pageDetails.instagram_business_account)
+            throw new Error(d.errors?.noIgBusiness || "Nenhuma conta Instagram Business vinculada.");
+
+          setIgAccountId(pageDetails.instagram_business_account.id);
+          setIsConnected(true);
+        } catch (err) {
+          setOauthError(err.message);
+        } finally {
+          setOauthLoading(false);
         }
+      })();
+      return;
+    }
 
-        const token = data.access_token;
-        setAccessToken(token);
-        setLoginMethod(provider);
+    // ── Instagram: lê o code dos query params e envia ao backend ──
+    if (provider === "instagram") {
+      const params = new URLSearchParams(window.location.search);
+      const code = params.get("code");
+      if (!code) return;
 
-        if (isInstagram) {
-          // Para Instagram, o backend já retorna o user_id
+      sessionStorage.removeItem("oauth_provider");
+      window.history.replaceState({}, "", window.location.pathname);
+
+      setOauthLoading(true);
+      setOauthError(null);
+
+      fetch(`${BACKEND_URL}/oauth/callback?code=${encodeURIComponent(code)}&is_instagram_only=true`)
+        .then((r) => r.json())
+        .then((data) => {
+          if (!data.access_token)
+            throw new Error(data.detail || "Falha na troca do token OAuth.");
+          setAccessToken(data.access_token);
+          setLoginMethod("instagram");
           setIgAccountId(String(data.user_id || ""));
           setIsConnected(true);
-        } else {
-          // Para Facebook, precisamos resolver a conta IG Business vinculada à Página
-          try {
-            const pagesRes = await fetch(
-              `https://graph.facebook.com/v25.0/me/accounts?access_token=${token}`,
-            );
-            const pages = await pagesRes.json();
-            if (!pages.data || pages.data.length === 0)
-              throw new Error(
-                d.errors?.noPages || "Nenhuma Página do Facebook encontrada.",
-              );
-
-            const page = pages.data[0];
-            const pageRes = await fetch(
-              `https://graph.facebook.com/v25.0/${page.id}?fields=instagram_business_account&access_token=${token}`,
-            );
-            const pageDetails = await pageRes.json();
-            if (!pageDetails.instagram_business_account)
-              throw new Error(
-                d.errors?.noIgBusiness ||
-                  "Nenhuma conta Instagram Business vinculada.",
-              );
-
-            setIgAccountId(pageDetails.instagram_business_account.id);
-            setIsConnected(true);
-          } catch (err) {
-            setErrors((prev) => ({ ...prev, profile: err.message }));
-          }
-        }
-      })
-      .catch((err) => setOauthError(err.message || "Erro no OAuth callback."))
-      .finally(() => setOauthLoading(false));
+        })
+        .catch((err) => setOauthError(err.message || "Erro no OAuth callback."))
+        .finally(() => setOauthLoading(false));
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
 
   // ── Logout ──
   const handleLogout = () => {
