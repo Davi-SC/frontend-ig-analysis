@@ -4,194 +4,129 @@ import { useLanguage } from "../contexts/LanguageContext";
 import { getTranslation } from "../translations";
 import LanguageSelector from "../components/LanguageSelector";
 
-const FB_APP_ID = process.env.REACT_APP_FB_APP_ID || "859402103106794";
-const IG_APP_ID = "1346553296929271"; // Instagram App ID (separate from FB App ID)
-const IG_APP_SECRET = process.env.REACT_APP_IG_APP_SECRET || "";
-const IG_REDIRECT_URI = "https://socialdatalab.vercel.app/";
-
-const IG_BUSINESS_SCOPES = [
-  "instagram_business_basic",
-  "instagram_business_manage_messages",
-  "instagram_business_manage_comments",
-  "instagram_business_content_publish",
-  "instagram_business_manage_insights",
-].join(",");
-
-const PERMISSIONS = [
-  "instagram_basic",
-  "instagram_manage_insights",
-  "instagram_manage_comments",
-  "pages_show_list",
-  "pages_read_engagement",
-  "business_management",
-];
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
 
 export default function Dashboard() {
   const { language } = useLanguage();
   const t = getTranslation(language);
   const d = t.dashboard;
 
-  const [sdkReady, setSdkReady] = useState(false);
-  const [isConnected, setIsConnected] = useState(false);
-  const [loginMethod, setLoginMethod] = useState(null); // 'facebook' | 'instagram'
-  const [accessToken, setAccessToken] = useState(null);
-  const [igAccountId, setIgAccountId] = useState(null);
+  const [isConnected, setIsConnected]   = useState(false);
+  const [loginMethod, setLoginMethod]   = useState(null); // 'facebook' | 'instagram'
+  const [accessToken, setAccessToken]   = useState(null);
+  const [igAccountId, setIgAccountId]   = useState(null);
 
-  const [profile, setProfile] = useState(null);
-  const [insights, setInsights] = useState(null);
-  const [mediaList, setMediaList] = useState([]);
-  const [comments, setComments] = useState([]);
+  const [profile, setProfile]           = useState(null);
+  const [insights, setInsights]         = useState(null);
+  const [mediaList, setMediaList]       = useState([]);
+  const [comments, setComments]         = useState([]);
   const [selectedMediaId, setSelectedMediaId] = useState(null);
 
-  const [loading, setLoading] = useState({ profile: false, insights: false, comments: false });
-  const [errors, setErrors] = useState({ profile: null, insights: null, comments: null });
-  const [igExchangeLoading, setIgExchangeLoading] = useState(false);
-  const [igExchangeError, setIgExchangeError] = useState(null);
+  const [loading, setLoading]   = useState({ profile: false, insights: false, comments: false });
+  const [errors, setErrors]     = useState({ profile: null, insights: null, comments: null });
+  const [oauthLoading, setOauthLoading] = useState(false);
+  const [oauthError, setOauthError]     = useState(null);
 
-  // ── Initialize Facebook SDK ──
-  useEffect(() => {
-    if (window.FB) {
-      setSdkReady(true);
-      return;
+  // ── Unified Graph API helper (adapts base URL by provider) ──
+  const graphGet = useCallback(async (path) => {
+    const baseUrl = loginMethod === "instagram"
+      ? "https://graph.instagram.com/v21.0"
+      : "https://graph.facebook.com/v21.0";
+    const sep = path.includes("?") ? "&" : "?";
+    const res  = await fetch(`${baseUrl}${path}${sep}access_token=${accessToken}`);
+    const data = await res.json();
+    if (data.error) throw data.error;
+    return data;
+  }, [accessToken, loginMethod]);
+
+  // ── Facebook Login — backend gera a URL, frontend só redireciona ──
+  const handleLogin = async () => {
+    try {
+      setOauthError(null);
+      const res  = await fetch(`${BACKEND_URL}/oauth/fb/url`);
+      const data = await res.json();
+      sessionStorage.setItem("oauth_provider", "facebook");
+      window.location.href = data.url;
+    } catch (err) {
+      setOauthError("Erro ao iniciar login com Facebook: " + err.message);
     }
-
-    window.fbAsyncInit = function () {
-      window.FB.init({
-        appId: FB_APP_ID,
-        cookie: true,
-        xfbml: false,
-        version: "v21.0",
-      });
-      setSdkReady(true);
-    };
-
-    if (!document.getElementById("facebook-jssdk")) {
-      const script = document.createElement("script");
-      script.id = "facebook-jssdk";
-      script.src = "https://connect.facebook.net/en_US/sdk.js";
-      script.async = true;
-      script.defer = true;
-      document.body.appendChild(script);
-    }
-  }, []);
-
-  // ── Graph API helper ──
-  const graphGet = useCallback(
-    (path) =>
-      new Promise((resolve, reject) => {
-        window.FB.api(path, "GET", { access_token: accessToken }, (res) => {
-          if (res && !res.error) resolve(res);
-          else reject(res?.error || { message: "Unknown error" });
-        });
-      }),
-    [accessToken]
-  );
-
-  // ── Fetch IG Business Account ID from connected Pages ──
-  const resolveIgAccount = useCallback(
-    async (token) => {
-      // We need to use the token directly because state may not be set yet
-      const fetchWithToken = (path) =>
-        new Promise((resolve, reject) => {
-          window.FB.api(path, "GET", { access_token: token }, (res) => {
-            if (res && !res.error) resolve(res);
-            else reject(res?.error || { message: "Unknown error" });
-          });
-        });
-
-      const pages = await fetchWithToken("/me/accounts");
-      if (!pages.data || pages.data.length === 0)
-        throw new Error(d.errors?.noPages || "No Facebook Pages found");
-
-      const page = pages.data[0];
-      const pageDetails = await fetchWithToken(
-        `/${page.id}?fields=instagram_business_account`
-      );
-
-      if (!pageDetails.instagram_business_account)
-        throw new Error(d.errors?.noIgBusiness || "No Instagram Business account linked");
-
-      return pageDetails.instagram_business_account.id;
-    },
-    [d.errors]
-  );
-
-  // ── Facebook Login ──
-  const handleLogin = () => {
-    if (!sdkReady) return;
-
-    window.FB.login(
-      (response) => {
-        if (response.authResponse) {
-          const token = response.authResponse.accessToken;
-          setAccessToken(token);
-          setIsConnected(true);
-          setLoginMethod("facebook");
-
-          resolveIgAccount(token)
-            .then((igId) => setIgAccountId(igId))
-            .catch((err) =>
-              setErrors((prev) => ({ ...prev, profile: err.message || String(err) }))
-            );
-        }
-      },
-      { scope: PERMISSIONS.join(",") }
-    );
   };
 
-  // ── Instagram Business Login — redirect to OAuth ──
-  const handleInstagramLogin = () => {
-    // Matches exactly the URL generated by the working Python notebook
-    const params = new URLSearchParams({
-      force_reauth: "true",
-      client_id: IG_APP_ID,
-      redirect_uri: IG_REDIRECT_URI,
-      response_type: "code",
-      scope: IG_BUSINESS_SCOPES,
-    });
-    window.location.href = `https://www.instagram.com/oauth/authorize?${params.toString()}`;
+  // ── Instagram Login — backend gera a URL, frontend só redireciona ──
+  const handleInstagramLogin = async () => {
+    try {
+      setOauthError(null);
+      const res  = await fetch(`${BACKEND_URL}/oauth/ig/url`);
+      const data = await res.json();
+      sessionStorage.setItem("oauth_provider", "instagram");
+      window.location.href = data.url;
+    } catch (err) {
+      setOauthError("Erro ao iniciar login com Instagram: " + err.message);
+    }
   };
 
-  // ── Handle Instagram OAuth callback — code stored in sessionStorage by Home.js ──
+  // ── Handle OAuth callback ──
+  // Após o login, o Instagram/Facebook redireciona de volta com ?code= na URL.
+  // O frontend lê o code, envia pro backend e recebe o token pronto.
   useEffect(() => {
-    const code = sessionStorage.getItem("ig_code");
-    if (!code || isConnected) return;
-    sessionStorage.removeItem("ig_code");
-    setIgExchangeLoading(true);
-    setIgExchangeError(null);
+    const params   = new URLSearchParams(window.location.search);
+    const code     = params.get("code");
+    const provider = sessionStorage.getItem("oauth_provider");
 
-    fetch("/api/ig-token", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ code }),
-    })
+    if (!code || !provider || isConnected) return;
+
+    // Limpa a URL e o sessionStorage antes de qualquer trabalho assíncrono
+    sessionStorage.removeItem("oauth_provider");
+    window.history.replaceState({}, "", window.location.pathname);
+
+    setOauthLoading(true);
+    setOauthError(null);
+
+    const isInstagram = provider === "instagram";
+
+    fetch(`${BACKEND_URL}/oauth/callback?code=${encodeURIComponent(code)}&is_instagram_only=${isInstagram}`)
       .then((r) => r.json())
-      .then((data) => {
-        console.log("[IG Token Exchange]", data);
-        if (data.access_token) {
-          setAccessToken(data.access_token);
-          setIgAccountId(String(data.user_id));
+      .then(async (data) => {
+        if (!data.access_token) {
+          throw new Error(data.detail || "Falha na troca do token OAuth.");
+        }
+
+        const token = data.access_token;
+        setAccessToken(token);
+        setLoginMethod(provider);
+
+        if (isInstagram) {
+          // Para Instagram, o backend já retorna o user_id
+          setIgAccountId(String(data.user_id || ""));
           setIsConnected(true);
-          setLoginMethod("instagram");
         } else {
-          const msg = data.error_message || JSON.stringify(data);
-          console.error("[IG Token Exchange Error]", msg);
-          setIgExchangeError(msg);
+          // Para Facebook, precisamos resolver a conta IG Business vinculada à Página
+          try {
+            const pagesRes   = await fetch(`https://graph.facebook.com/v21.0/me/accounts?access_token=${token}`);
+            const pages      = await pagesRes.json();
+            if (!pages.data || pages.data.length === 0)
+              throw new Error(d.errors?.noPages || "Nenhuma Página do Facebook encontrada.");
+
+            const page       = pages.data[0];
+            const pageRes    = await fetch(`https://graph.facebook.com/v21.0/${page.id}?fields=instagram_business_account&access_token=${token}`);
+            const pageDetails = await pageRes.json();
+            if (!pageDetails.instagram_business_account)
+              throw new Error(d.errors?.noIgBusiness || "Nenhuma conta Instagram Business vinculada.");
+
+            setIgAccountId(pageDetails.instagram_business_account.id);
+            setIsConnected(true);
+          } catch (err) {
+            setErrors((prev) => ({ ...prev, profile: err.message }));
+          }
         }
       })
-      .catch((err) => {
-        console.error("[IG Token Exchange CORS/Network]", err);
-        setIgExchangeError("Network error — token exchange may be blocked by CORS. Check browser console.");
-      })
-      .finally(() => setIgExchangeLoading(false));
+      .catch((err) => setOauthError(err.message || "Erro no OAuth callback."))
+      .finally(() => setOauthLoading(false));
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // ── Logout ──
   const handleLogout = () => {
-    if (window.FB && loginMethod === "facebook") {
-      window.FB.logout(() => {});
-    }
     setIsConnected(false);
     setAccessToken(null);
     setIgAccountId(null);
@@ -202,87 +137,59 @@ export default function Dashboard() {
     setSelectedMediaId(null);
     setLoginMethod(null);
     setErrors({ profile: null, insights: null, comments: null });
+    setOauthError(null);
+    sessionStorage.removeItem("oauth_provider");
   };
 
-  // ── Fetch Profile — adapts to login method ──
+  // ── Fetch Profile ──
   useEffect(() => {
     if (!igAccountId || !accessToken) return;
-
     setLoading((l) => ({ ...l, profile: true }));
-    setErrors((e) => ({ ...e, profile: null }));
+    setErrors((e)  => ({ ...e, profile: null }));
 
-    if (loginMethod === "instagram") {
-      // Instagram Business Login uses a different base URL
-      fetch(
-        `https://graph.instagram.com/v21.0/${igAccountId}?fields=username,name,biography,profile_picture_url,followers_count,follows_count,media_count&access_token=${accessToken}`
-      )
-        .then((r) => r.json())
-        .then((data) => setProfile(data))
-        .catch((err) => setErrors((e) => ({ ...e, profile: err.message })))
-        .finally(() => setLoading((l) => ({ ...l, profile: false })));
-    } else {
-      graphGet(
-        `/${igAccountId}?fields=username,name,biography,profile_picture_url,followers_count,follows_count,media_count`
-      )
-        .then((data) => setProfile(data))
-        .catch((err) => setErrors((e) => ({ ...e, profile: err.message })))
-        .finally(() => setLoading((l) => ({ ...l, profile: false })));
-    }
-  }, [igAccountId, accessToken, loginMethod, graphGet]);
+    graphGet(`/${igAccountId}?fields=username,name,biography,profile_picture_url,followers_count,follows_count,media_count`)
+      .then((data) => setProfile(data))
+      .catch((err) => setErrors((e) => ({ ...e, profile: err.message || String(err) })))
+      .finally(() => setLoading((l) => ({ ...l, profile: false })));
+  }, [igAccountId, accessToken, graphGet]);
 
   // ── Fetch Media list ──
   useEffect(() => {
     if (!igAccountId || !accessToken) return;
 
-    const fetchMedia = loginMethod === "instagram"
-      ? fetch(`https://graph.instagram.com/v21.0/${igAccountId}/media?fields=id,caption,timestamp,media_type,thumbnail_url,media_url&limit=6&access_token=${accessToken}`).then((r) => r.json())
-      : graphGet(`/${igAccountId}/media?fields=id,caption,timestamp,media_type,thumbnail_url,media_url&limit=6`);
-
-    fetchMedia
+    graphGet(`/${igAccountId}/media?fields=id,caption,timestamp,media_type,thumbnail_url,media_url&limit=6`)
       .then((data) => {
         setMediaList(data.data || []);
-        if (data.data && data.data.length > 0) {
-          setSelectedMediaId(data.data[0].id);
-        }
+        if (data.data && data.data.length > 0) setSelectedMediaId(data.data[0].id);
       })
       .catch(() => {});
-  }, [igAccountId, accessToken, loginMethod, graphGet]);
+  }, [igAccountId, accessToken, graphGet]);
 
   // ── Fetch Insights ──
   useEffect(() => {
     if (!igAccountId || !accessToken) return;
-
     setLoading((l) => ({ ...l, insights: true }));
-    setErrors((e) => ({ ...e, insights: null }));
+    setErrors((e)  => ({ ...e, insights: null }));
 
     const insightsPath = `/${igAccountId}/insights?metric=reach,profile_views,accounts_engaged&period=day&metric_type=total_value&since=${Math.floor(Date.now() / 1000) - 28 * 86400}&until=${Math.floor(Date.now() / 1000)}`;
 
-    const fetchInsights = loginMethod === "instagram"
-      ? fetch(`https://graph.instagram.com/v21.0${insightsPath}&access_token=${accessToken}`).then((r) => r.json())
-      : graphGet(insightsPath);
-
-    fetchInsights
+    graphGet(insightsPath)
       .then((data) => setInsights(data.data || []))
-      .catch((err) => setErrors((e) => ({ ...e, insights: err.message })))
+      .catch((err) => setErrors((e) => ({ ...e, insights: err.message || String(err) })))
       .finally(() => setLoading((l) => ({ ...l, insights: false })));
-  }, [igAccountId, accessToken, loginMethod, graphGet]);
+  }, [igAccountId, accessToken, graphGet]);
 
   // ── Fetch Comments ──
   useEffect(() => {
     if (!selectedMediaId || !accessToken) return;
-
     setLoading((l) => ({ ...l, comments: true }));
-    setErrors((e) => ({ ...e, comments: null }));
+    setErrors((e)  => ({ ...e, comments: null }));
 
-    const fetchComments = loginMethod === "instagram"
-      ? fetch(`https://graph.instagram.com/v21.0/${selectedMediaId}/comments?fields=id,text,username,timestamp&limit=10&access_token=${accessToken}`).then((r) => r.json())
-      : graphGet(`/${selectedMediaId}/comments?fields=id,text,username,timestamp&limit=10`);
-
-    fetchComments
+    graphGet(`/${selectedMediaId}/comments?fields=id,text,username,timestamp&limit=10`)
       .then((data) => setComments(data.data || []))
-      .catch((err) => setErrors((e) => ({ ...e, comments: err.message })))
+      .catch((err) => setErrors((e) => ({ ...e, comments: err.message || String(err) })))
       .finally(() => setLoading((l) => ({ ...l, comments: false })));
-  }, [selectedMediaId, accessToken, loginMethod, graphGet]);
+  }, [selectedMediaId, accessToken, graphGet]);
 
   // ── Helpers ──
   const sumInsightValues = (metricName) => {
@@ -294,13 +201,10 @@ export default function Dashboard() {
 
   const formatDate = (ts) => {
     if (!ts) return "";
-    return new Date(ts).toLocaleDateString(language === "pt" ? "pt-BR" : language === "es" ? "es-ES" : "en-US", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+    return new Date(ts).toLocaleDateString(
+      language === "pt" ? "pt-BR" : language === "es" ? "es-ES" : "en-US",
+      { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" }
+    );
   };
 
   // ── RENDER ──
@@ -311,23 +215,21 @@ export default function Dashboard() {
       <div className="container" style={{ maxWidth: "1000px", margin: "0 auto" }}>
         {/* Header */}
         <div className="dashboard-header">
-          <Link to="/" className="back-link">
-            {d.backToHome}
-          </Link>
+          <Link to="/" className="back-link">{d.backToHome}</Link>
           <h1>{d.title}</h1>
           <p className="dashboard-subtitle">{d.subtitle}</p>
 
-          {/* Instagram token exchange loading/error */}
-          {igExchangeLoading && (
+          {/* OAuth loading/error */}
+          {oauthLoading && (
             <div style={{ textAlign: "center", padding: "16px", color: "var(--color-text-secondary)" }}>
               <LoadingSpinner />
-              <p style={{ marginTop: "8px" }}>Exchanging Instagram token...</p>
+              <p style={{ marginTop: "8px" }}>Autenticando...</p>
             </div>
           )}
-          {igExchangeError && (
+          {oauthError && (
             <div className="error-card" style={{ marginTop: "12px", textAlign: "left" }}>
               <span>⚠️</span>
-              <p><strong>Instagram login error:</strong> {igExchangeError}</p>
+              <p><strong>Erro de autenticação:</strong> {oauthError}</p>
             </div>
           )}
 
@@ -336,7 +238,6 @@ export default function Dashboard() {
               <button
                 className="btn btn-primary connect-btn"
                 onClick={handleLogin}
-                disabled={!sdkReady}
                 id="btn-connect-facebook"
                 style={{ background: "linear-gradient(135deg, #1877f2, #0a5dc2)" }}
               >
@@ -375,9 +276,9 @@ export default function Dashboard() {
             <h2>{d.howItWorks}</h2>
             <div className="permissions-grid">
               {[
-                { icon: "👤", perm: "instagram_basic", desc: d.permBasicDesc },
-                { icon: "📊", perm: "instagram_manage_insights", desc: d.permInsightsDesc },
-                { icon: "💬", perm: "instagram_manage_comments", desc: d.permCommentsDesc },
+                { icon: "👤", perm: "instagram_basic",             desc: d.permBasicDesc },
+                { icon: "📊", perm: "instagram_manage_insights",   desc: d.permInsightsDesc },
+                { icon: "💬", perm: "instagram_manage_comments",   desc: d.permCommentsDesc },
                 { icon: "📄", perm: "pages_show_list + pages_read_engagement", desc: d.permPagesDesc },
               ].map((p, i) => (
                 <div key={i} className="permission-card">
@@ -407,24 +308,18 @@ export default function Dashboard() {
               <div className="profile-card card">
                 <div className="profile-top">
                   {profile.profile_picture_url && (
-                    <img
-                      src={profile.profile_picture_url}
-                      alt={profile.username}
-                      className="profile-avatar"
-                    />
+                    <img src={profile.profile_picture_url} alt={profile.username} className="profile-avatar" />
                   )}
                   <div className="profile-info">
                     <h3>@{profile.username}</h3>
                     {profile.name && <p className="profile-name">{profile.name}</p>}
-                    {profile.biography && (
-                      <p className="profile-bio">{profile.biography}</p>
-                    )}
+                    {profile.biography && <p className="profile-bio">{profile.biography}</p>}
                   </div>
                 </div>
                 <div className="metrics-grid">
                   <MetricCard label={d.followers} value={profile.followers_count} icon="👥" />
-                  <MetricCard label={d.following} value={profile.follows_count} icon="➡️" />
-                  <MetricCard label={d.posts} value={profile.media_count} icon="📷" />
+                  <MetricCard label={d.following} value={profile.follows_count}   icon="➡️" />
+                  <MetricCard label={d.posts}     value={profile.media_count}     icon="📷" />
                 </div>
               </div>
             )}
@@ -436,9 +331,7 @@ export default function Dashboard() {
           <div className="dashboard-section">
             <div className="section-header">
               <h2>📊 {d.insightsTitle}</h2>
-              <span className="permission-badge permission-badge--green">
-                instagram_manage_insights
-              </span>
+              <span className="permission-badge permission-badge--green">instagram_manage_insights</span>
             </div>
 
             {loading.insights && <LoadingSpinner />}
@@ -448,21 +341,9 @@ export default function Dashboard() {
               <div className="card">
                 <p className="insights-period">{d.insightsPeriod}</p>
                 <div className="metrics-grid">
-                  <MetricCard
-                    label={d.reach}
-                    value={sumInsightValues("reach").toLocaleString()}
-                    icon="🌐"
-                  />
-                  <MetricCard
-                    label={d.accountsEngaged || "Accounts Engaged"}
-                    value={sumInsightValues("accounts_engaged").toLocaleString()}
-                    icon="👥"
-                  />
-                  <MetricCard
-                    label={d.profileViews}
-                    value={sumInsightValues("profile_views").toLocaleString()}
-                    icon="🔍"
-                  />
+                  <MetricCard label={d.reach}                        value={sumInsightValues("reach").toLocaleString()}             icon="🌐" />
+                  <MetricCard label={d.accountsEngaged || "Accounts Engaged"} value={sumInsightValues("accounts_engaged").toLocaleString()} icon="👥" />
+                  <MetricCard label={d.profileViews}                 value={sumInsightValues("profile_views").toLocaleString()}    icon="🔍" />
                 </div>
               </div>
             )}
