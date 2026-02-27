@@ -111,7 +111,9 @@ export default function Dashboard() {
           );
           const pages = await pagesRes.json();
           if (!pages.data || pages.data.length === 0)
-            throw new Error(d.errors?.noPages || "Nenhuma Página do Facebook encontrada.");
+            throw new Error(
+              d.errors?.noPages || "Nenhuma Página do Facebook encontrada.",
+            );
 
           const page = pages.data[0];
           const pageRes = await fetch(
@@ -119,7 +121,10 @@ export default function Dashboard() {
           );
           const pageDetails = await pageRes.json();
           if (!pageDetails.instagram_business_account)
-            throw new Error(d.errors?.noIgBusiness || "Nenhuma conta Instagram Business vinculada.");
+            throw new Error(
+              d.errors?.noIgBusiness ||
+                "Nenhuma conta Instagram Business vinculada.",
+            );
 
           setIgAccountId(pageDetails.instagram_business_account.id);
           setIsConnected(true);
@@ -144,7 +149,9 @@ export default function Dashboard() {
       setOauthLoading(true);
       setOauthError(null);
 
-      fetch(`${BACKEND_URL}/oauth/callback?code=${encodeURIComponent(code)}&is_instagram_only=true`)
+      fetch(
+        `${BACKEND_URL}/oauth/callback?code=${encodeURIComponent(code)}&is_instagram_only=true`,
+      )
         .then((r) => r.json())
         .then((data) => {
           if (!data.access_token)
@@ -159,7 +166,6 @@ export default function Dashboard() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
 
   // ── Logout ──
   const handleLogout = () => {
