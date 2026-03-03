@@ -116,8 +116,9 @@ export default function Dashboard() {
             );
 
           const page = pages.data[0];
+          // Busca id e username da conta IG Business já embutidos na query da Page
           const pageRes = await fetch(
-            `https://graph.facebook.com/v25.0/${page.id}?fields=instagram_business_account&access_token=${token}`,
+            `https://graph.facebook.com/v25.0/${page.id}?fields=instagram_business_account{id,username}&access_token=${token}`,
           );
           const pageDetails = await pageRes.json();
           if (!pageDetails.instagram_business_account)
@@ -127,13 +128,14 @@ export default function Dashboard() {
             );
 
           const igUserId = pageDetails.instagram_business_account.id;
+          const igUsername = pageDetails.instagram_business_account.username || "";
           setIgAccountId(igUserId);
 
           // Persiste o token e o perfil no banco via backend
           const saveRes = await fetch(`${BACKEND_URL}/oauth/fb/save`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ access_token: token, user_id: igUserId }),
+            body: JSON.stringify({ access_token: token, user_id: igUserId, username: igUsername }),
           });
           if (!saveRes.ok) {
             const errData = await saveRes.json().catch(() => ({}));
