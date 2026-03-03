@@ -126,7 +126,20 @@ export default function Dashboard() {
                 "Nenhuma conta Instagram Business vinculada.",
             );
 
-          setIgAccountId(pageDetails.instagram_business_account.id);
+          const igUserId = pageDetails.instagram_business_account.id;
+          setIgAccountId(igUserId);
+
+          // Persiste o token e o perfil no banco via backend
+          const saveRes = await fetch(`${BACKEND_URL}/oauth/fb/save`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ access_token: token, user_id: igUserId }),
+          });
+          if (!saveRes.ok) {
+            const errData = await saveRes.json().catch(() => ({}));
+            console.warn("Aviso: token obtido mas não foi salvo no banco:", errData.detail || saveRes.status);
+          }
+
           setIsConnected(true);
         } catch (err) {
           setOauthError(err.message);
