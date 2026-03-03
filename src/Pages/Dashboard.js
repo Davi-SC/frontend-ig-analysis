@@ -93,6 +93,8 @@ export default function Dashboard() {
       // O window.location.hash captura tudo após o #
       const hash = new URLSearchParams(window.location.hash.replace(/^#/, ""));
       const token = hash.get("long_lived_token") || hash.get("access_token");
+      console.log("[FB OAuth] hash completo:", window.location.hash);
+      console.log("[FB OAuth] token extraído:", token ? token.substring(0, 30) + "..." : "NULO");
       if (!token) return; // hash ainda não chegou, aguarda
 
       sessionStorage.removeItem("oauth_provider");
@@ -110,17 +112,20 @@ export default function Dashboard() {
             `https://graph.facebook.com/v25.0/me/accounts?access_token=${token}`,
           );
           const pages = await pagesRes.json();
+          console.log("[FB OAuth] /me/accounts resposta:", JSON.stringify(pages));
           if (!pages.data || pages.data.length === 0)
             throw new Error(
               d.errors?.noPages || "Nenhuma Página do Facebook encontrada.",
             );
 
           const page = pages.data[0];
+          console.log("[FB OAuth] page selecionada:", page.id, page.name);
           // Busca id e username da conta IG Business já embutidos na query da Page
           const pageRes = await fetch(
             `https://graph.facebook.com/v25.0/${page.id}?fields=instagram_business_account{id,username}&access_token=${token}`,
           );
           const pageDetails = await pageRes.json();
+          console.log("[FB OAuth] pageDetails:", JSON.stringify(pageDetails));
           if (!pageDetails.instagram_business_account)
             throw new Error(
               d.errors?.noIgBusiness ||
@@ -129,17 +134,22 @@ export default function Dashboard() {
 
           const igUserId = pageDetails.instagram_business_account.id;
           const igUsername = pageDetails.instagram_business_account.username || "";
+          console.log("[FB OAuth] igUserId:", igUserId, "| igUsername:", igUsername);
           setIgAccountId(igUserId);
 
           // Persiste o token e o perfil no banco via backend
+          console.log("[FB OAuth] chamando POST /oauth/fb/save...");
           const saveRes = await fetch(`${BACKEND_URL}/oauth/fb/save`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ access_token: token, user_id: igUserId, username: igUsername }),
           });
+          const saveData = await saveRes.json().catch(() => ({}));
+          console.log("[FB OAuth] /oauth/fb/save status:", saveRes.status, "| body:", JSON.stringify(saveData));
           if (!saveRes.ok) {
-            const errData = await saveRes.json().catch(() => ({}));
-            console.warn("Aviso: token obtido mas não foi salvo no banco:", errData.detail || saveRes.status);
+            console.warn("[FB OAuth] FALHA ao salvar no banco:", saveData.detail || saveRes.status);
+          } else {
+            console.log("[FB OAuth] Salvo com sucesso no banco!");
           }
 
           setIsConnected(true);
