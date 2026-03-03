@@ -7,6 +7,7 @@ import Privacy from "./Pages/Privacy";
 import Terms from "./Pages/Terms";
 import DataDeletion from "./Pages/DataDeletion";
 import Dashboard from "./Pages/Dashboard";
+import FbCallback from "./Pages/FbCallback";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/auth/fb/callback" element={<FbCallback />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/data-deletion" element={<DataDeletion />} />
