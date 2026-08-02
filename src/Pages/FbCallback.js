@@ -12,16 +12,15 @@ export default function FbCallback() {
   const navigate = useNavigate();
   const [status, setStatus] = useState("Processando login com Facebook...");
   const [error, setError] = useState(null);
+  // profile_id retornado pelo backend após salvar o token
+  // O access_token NUNCA é armazenado no frontend
 
   useEffect(() => {
     (async () => {
       try {
-        // 1. Lê o token do hash da URL
+        // 1. Lê o token do hash da URL (necessário apenas para enviar ao backend)
         const hash = new URLSearchParams(window.location.hash.replace(/^#/, ""));
         const token = hash.get("long_lived_token") || hash.get("access_token");
-
-        console.log("[FbCallback] hash completo:", window.location.hash);
-        console.log("[FbCallback] token extraído:", token ? token.substring(0, 30) + "..." : "NULO");
 
         if (!token) {
           throw new Error("Token não encontrado na URL. O login pelo Facebook falhou.");
@@ -74,9 +73,8 @@ export default function FbCallback() {
           console.log("[FbCallback] Salvo com sucesso no banco!");
         }
 
-        // 5. Passa o contexto de sessão para o Dashboard via sessionStorage
-        sessionStorage.setItem("fb_access_token", token);
-        sessionStorage.setItem("fb_ig_user_id", igUserId);
+        // 5. Salva apenas o profile_id no sessionStorage (token fica no backend)
+        sessionStorage.setItem("fb_profile_id", igUserId);
 
         // 6. Redireciona para o dashboard
         setStatus("Redirecionando...");
