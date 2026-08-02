@@ -11,9 +11,9 @@ module.exports = async function handler(req, res) {
     return res.status(400).json({ error: "Missing code" });
   }
 
-  const IG_APP_ID = process.env.REACT_APP_IG_APP_ID || "1346553296929271";
-  const IG_APP_SECRET = process.env.REACT_APP_IG_APP_SECRET || "";
-  const IG_REDIRECT_URI = "https://socialdatalab.vercel.app/";
+  const IG_APP_ID = process.env.REACT_APP_IG_APP_ID;
+  const IG_APP_SECRET = process.env.REACT_APP_IG_APP_SECRET;
+  const IG_REDIRECT_URI = "https://www.socialdatalab.online/";
 
   try {
     const response = await fetch("https://api.instagram.com/oauth/access_token", {
