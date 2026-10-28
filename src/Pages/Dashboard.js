@@ -104,34 +104,10 @@ export default function Dashboard() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // ── Conectar: salva profile_id e dispara coleta inicial se for 1ª vez ────
-  const _connectWithProfileId = useCallback(async (pid, isFirstLogin = false) => {
-    saveProfileId(pid);
-    setProfileId(pid);
-    setIsConnected(true);
-
-    if (isFirstLogin) {
-      setCollecting(true);
-      setCollectSteps([]);
-      try {
-        // Usa fetch direto pois o profileId ainda não está no state
-        const res = await fetch(`${BACKEND_URL}/collect/initial`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json", "X-Profile-ID": pid },
-        });
-        const data = await res.json().catch(() => ({}));
-        setCollectSteps(data.steps || []);
-      } catch (e) {
-        setCollectSteps([{ service: "collect", status: "error", message: e.message }]);
-      } finally {
-        setCollecting(false);
-      }
-    }
-  }, []);
-
-  // ── Busca dados do backend sempre que conectar ────────────────────────────
-  useEffect(() => {
-    if (!isConnected || !profileId) return;
+  // ── Busca dados do backend ──────────────────────────────────────────────
+  const loadDashboardData = useCallback((pid) => {
+    const targetId = pid || profileId || getProfileId();
+    if (!targetId) return;
 
     // Perfil
     setLoading((l) => ({ ...l, profile: true }));
@@ -139,6 +115,11 @@ export default function Dashboard() {
       .then(setProfile)
       .catch((e) => setError("profile", e.message))
       .finally(() => setLoading((l) => ({ ...l, profile: false })));
+
+    // Snapshots
+    backendGet("/data/snapshots", { days: 30 })
+      .then((r) => setSnapshots(r.data || []))
+      .catch(() => {});
 
     // Posts (últimos 20)
     setLoading((l) => ({ ...l, posts: true }));
@@ -164,7 +145,41 @@ export default function Dashboard() {
       if (et.status === "fulfilled") setEngagementTrend(et.value.data || []);
       setLoading((l) => ({ ...l, analytics: false }));
     });
-  }, [isConnected, profileId]);
+  }, [profileId]);
+
+  // Carrega ao conectar
+  useEffect(() => {
+    if (isConnected && profileId) {
+      loadDashboardData(profileId);
+    }
+  }, [isConnected, profileId, loadDashboardData]);
+
+  // ── Conectar: salva profile_id e dispara coleta inicial se for 1ª vez ────
+  const _connectWithProfileId = useCallback(async (pid, isFirstLogin = false) => {
+    saveProfileId(pid);
+    setProfileId(pid);
+    setIsConnected(true);
+
+    if (isFirstLogin) {
+      setCollecting(true);
+      setCollectSteps([]);
+      try {
+        const res = await fetch(`${BACKEND_URL}/collect/initial`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "X-Profile-ID": pid },
+        });
+        const data = await res.json().catch(() => ({}));
+        setCollectSteps(data.steps || []);
+      } catch (e) {
+        setCollectSteps([{ service: "collect", status: "error", message: e.message }]);
+      } finally {
+        setCollecting(false);
+        loadDashboardData(pid);
+      }
+    } else {
+      loadDashboardData(pid);
+    }
+  }, [loadDashboardData]);
 
   // ── Busca engajamento do post selecionado ─────────────────────────────────
   useEffect(() => {
@@ -206,6 +221,22 @@ export default function Dashboard() {
       setCollectSteps([{ service: "collect", status: "error", message: e.message }]);
     } finally {
       setCollecting(false);
+      loadDashboardData();
+    }
+  };
+
+  // ── Coleta inicial manual (descoberta de posts + snapshots + métricas) ────
+  const handleInitialCollect = async () => {
+    setCollecting(true);
+    setCollectSteps([]);
+    try {
+      const data = await backendPost("/collect/initial");
+      setCollectSteps(data.steps || []);
+    } catch (e) {
+      setCollectSteps([{ service: "collect", status: "error", message: e.message }]);
+    } finally {
+      setCollecting(false);
+      loadDashboardData();
     }
   };
 
@@ -280,7 +311,11 @@ export default function Dashboard() {
               <span className="status-connected">✅ {d.connected}</span>
               <button className="btn" onClick={handleRefresh} disabled={collecting} id="btn-refresh"
                 style={{ marginLeft: "8px", fontSize: "0.85rem", padding: "6px 14px" }}>
-                {collecting ? "Atualizando…" : "🔄 Atualizar dados"}
+                {collecting ? "Atualizando…" : "🔄 Atualizar métricas"}
+              </button>
+              <button className="btn" onClick={handleInitialCollect} disabled={collecting} id="btn-initial-collect"
+                style={{ marginLeft: "6px", fontSize: "0.85rem", padding: "6px 14px", background: "rgba(255, 255, 255, 0.08)" }}>
+                {collecting ? "Coletando…" : "📥 Coleta Completa"}
               </button>
               <button className="btn disconnect-btn" onClick={handleLogout} id="btn-disconnect">
                 {d.disconnectButton}
@@ -340,23 +375,35 @@ export default function Dashboard() {
         {isConnected && (
           <>
             {/* ── Tabs ── */}
-            <div style={{ display: "flex", gap: "8px", margin: "16px 0", borderBottom: "2px solid var(--color-border, #2a2a2a)", paddingBottom: "0" }}>
+            <div style={{ display: "flex", gap: "10px", margin: "20px 0", borderBottom: "2px solid rgba(255, 255, 255, 0.1)", position: "relative", zIndex: 5 }}>
               {[
                 { id: "overview", label: "👤 Visão Geral" },
                 { id: "posts", label: "📷 Posts" },
                 { id: "analytics", label: "📊 Analytics" },
-              ].map((tab) => (
-                <button key={tab.id} onClick={() => setActiveTab(tab.id)}
-                  style={{
-                    padding: "10px 20px", border: "none", background: "transparent", cursor: "pointer",
-                    fontWeight: activeTab === tab.id ? 700 : 400,
-                    color: activeTab === tab.id ? "var(--color-primary, #e1306c)" : "var(--color-text-secondary)",
-                    borderBottom: activeTab === tab.id ? "2px solid var(--color-primary, #e1306c)" : "2px solid transparent",
-                    marginBottom: "-2px", fontSize: "0.95rem",
-                  }}>
-                  {tab.label}
-                </button>
-              ))}
+              ].map((tab) => {
+                const isActive = activeTab === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => setActiveTab(tab.id)}
+                    style={{
+                      padding: "12px 22px",
+                      border: "none",
+                      borderBottom: isActive ? "3px solid #e1306c" : "3px solid transparent",
+                      background: isActive ? "rgba(225, 48, 108, 0.15)" : "rgba(255, 255, 255, 0.03)",
+                      color: isActive ? "#ffffff" : "#b8b8c0",
+                      fontWeight: isActive ? 700 : 500,
+                      fontSize: "0.95rem",
+                      cursor: "pointer",
+                      borderRadius: "8px 8px 0 0",
+                      transition: "all 0.2s ease",
+                    }}
+                  >
+                    {tab.label}
+                  </button>
+                );
+              })}
             </div>
 
             {/* ══════════════ TAB: VISÃO GERAL ══════════════ */}
@@ -501,8 +548,17 @@ export default function Dashboard() {
                 )}
 
                 {!loading.posts && posts.length === 0 && (
-                  <div className="card empty-state">
-                    <p>📷 Nenhum post encontrado. Execute uma coleta inicial para carregar os dados.</p>
+                  <div className="card empty-state" style={{ textAlign: "center", padding: "32px 16px" }}>
+                    <p style={{ fontSize: "1rem", marginBottom: "16px" }}>📷 Nenhum post encontrado no banco ainda.</p>
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={handleInitialCollect}
+                      disabled={collecting}
+                      style={{ padding: "10px 24px", cursor: "pointer" }}
+                    >
+                      {collecting ? "Coletando posts..." : "🔍 Descobrir e Coletar Posts Agora"}
+                    </button>
                   </div>
                 )}
               </div>
